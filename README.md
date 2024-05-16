@@ -1,2 +1,3 @@
-# r-ose
-Reusable Open Stratospheric Explorer 
+# Reusable Open Stratospheric Explorer (R-OSE)
+Flight Data Logging Program
+
