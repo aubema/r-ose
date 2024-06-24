@@ -1,4 +1,4 @@
-# R-OSE flight simulator v1.3
+# R-OSE flight parameters v1.3
 # Input section
 
 from tkinter import *
@@ -8,20 +8,22 @@ import re, math, os, csv
 from flight_result import Flight_result
 from datetime import datetime
 
+# Setting utc time for data 
 now = datetime.utcnow()
 dt_string = now.strftime("%d/%m/%y-%H:%M-UTC")
-print(dt_string)
+#print(dt_string)
 
 class Flight_input():
 
 	def __init__(self):
+		# Setting window paramater
 		self.main_window = Tk()
-		self.main_window.title("R-OSE : The stratospheric balloon flight simulator")
-		self.main_window.geometry("1100x1130")
-		self.main_window.minsize(1100,1130)
-		#self.main_window.resizable(width=False, height= False)
+		self.main_window.title("R-OSE : The stratospheric balloon flight parameters")
+		self.main_window.geometry("1120x1060")
+		self.main_window.minsize(1120,1060)
 		self.main_window.config(background='#cacfcc')
 
+		# Setting principal frame
 		self.top_frame = Frame(self.main_window, bg='#cacfcc', bd=0, relief=RAISED, highlightthickness=0)
 		self.section1_frame = Frame(self.main_window, bg='#cacfcc', bd=0, relief=RAISED, highlightthickness=0)
 		self.section2_frame = Frame(self.main_window, bg='#cacfcc', bd=0, relief=RAISED, highlightthickness=0)
@@ -30,6 +32,7 @@ class Flight_input():
 
 		self.create_widgets()
 
+		# Declare position of section
 		self.top_frame.pack()
 		self.section1_frame.pack()
 		self.section2_frame.pack()
@@ -38,6 +41,7 @@ class Flight_input():
 
 
 	def create_widgets(self):
+		# Setting main section
 		self.create_title()
 		self.create_subtitle()
 		self.create_logo()
@@ -45,14 +49,12 @@ class Flight_input():
 		self.create_flight_parameter()
 		self.create_air_density_parameter()
 		self.create_alert_section()
-
-		self.calculate_button()
-		self.create_close_button()
+		self.create_button()	
 
 	#---------------------------------Top Section-----------------------------------#
 
 	def create_title(self):
-		title_text = "Welcome to the stratospheric balloon flight simulator"
+		title_text = "Welcome to the stratospheric balloon flight parameters"
 		label_title = Label(self.top_frame, text=title_text, font=("babel", 15), bg='#cacfcc', fg='black')
 		label_title.pack()
 
@@ -61,7 +63,7 @@ class Flight_input():
 		label_subtitle = Label(self.top_frame, text=subtitle_text, font=("babel", 10), bg='#cacfcc', fg='black')
 		label_subtitle.pack()
 
-	def create_logo(self):				
+	def create_logo(self):
 		image = Image.open("logo_v4_2.png")
 		img = image.resize((500,200))
 		self.logo = ImageTk.PhotoImage(img)
@@ -69,9 +71,9 @@ class Flight_input():
 		self.label_logo.image = self.logo  # Keep a reference to the image object
 		self.label_logo.pack(pady=10)
 
-	def read_data(self):
-		# To show last entry data
+	def read_data(self):		
 		if os.path.exists("save_flight_data.csv") == False:
+			# First use of the program or if data is erase, default. 
 			self.payload_mass = ""
 			self.balloon_mass = ""
 			self.balloon_nb = ""
@@ -83,6 +85,7 @@ class Flight_input():
 			self.humidity_level = ""				
 		else:
 			with open("save_flight_data.csv", "r") as file:
+				# Show the last recorded data
 				last_line = file.readlines()[-1]			
 				last_line = last_line.strip("\n")
 				last_line = [x for x in last_line.split(",") if x!=""]					
@@ -100,7 +103,9 @@ class Flight_input():
 #-----------------------------------Section 1------------------------------------------#
 
 	def create_flight_parameter(self):
+		# Add last data in these section from read_data function  
 		self.read_data()
+
 		# Title row
 		label_flight_parameter_title = Label(self.section1_frame, text="Flight Parameter", font=("babel 12 underline"), bg='#cacfcc', fg='black')
 		label_flight_parameter_title.grid(row=0, column=0, columnspan=2, pady=5)
@@ -157,7 +162,9 @@ class Flight_input():
 #------------------------------Section 2--------------------------------------#
 
 	def create_air_density_parameter(self):
+		# Add last data in these section from read_data function  
 		self.read_data()
+
 		# Title Air Density
 		label_air_density_title = Label(self.section2_frame, text="Air density parameter", font=("babel 12 underline"), bg='#cacfcc', fg='black')
 		label_air_density_title.grid(row=0, column=0, columnspan=2, pady=5)
@@ -194,19 +201,16 @@ class Flight_input():
 	def create_alert_section(self):
 		# Alert row
 		self.label_alert = Label(self.alert_section_frame, text="", font=("babel", 12), bg='#cacfcc', fg='black')
-		self.label_alert.pack(pady=10)
+		self.label_alert.pack(pady=10)	
 
-	def calculate_button(self):
-		calculate_button = Button(self.alert_section_frame, text="Calculate", font=("babel", 12), bg='#cacfcc', fg='black', command=self.add_data_values)
-		calculate_button.pack(ipadx=100, ipady=10, pady=10)
-
-	def add_data_values(self):		
-		self.label_alert.config(text="")			
-
+	def add_data_values(self):
+		# Show alert info if needed 		
+		self.label_alert.config(text="")
 		if len(self.input_payload_mass.get())==0 or len(self.input_balloon_mass.get())==0 or len(self.input_balloon_number.get())==0 or len(self.input_launch_volume.get())==0 or len(self.input_parachute_diameter.get())==0 or len(self.input_excess_weight_neck_lift.get())==0 or len(self.input_temperature_celcius.get())==0 or len(self.input_ambient_pressure.get())==0 or len(self.input_humidity_level.get())==0:
 			self.label_alert.config(text = "You must fill the fields!")	
 		else:
 			try:
+				# Adding input in variable
 				payload_mass = float(self.input_payload_mass.get())
 				balloon_mass = float(self.input_balloon_mass.get())
 				balloon_nb = int(self.input_balloon_number.get())					
@@ -217,22 +221,26 @@ class Flight_input():
 				ambient_pressure = float(self.input_ambient_pressure.get())
 				humidity_level = float(self.input_humidity_level.get())
 				if parachute_diameter == 0:
+					# Please use a parachute
 					self.label_alert.config(text = "Warning : You must add a parachute!")
 			except ValueError:
+				# To prevent errors in calculations in the next step
 				self.label_alert.config(text="Only digit in the fields!")
 			finally:			
-
+				# If all input is good, it's time to save everything
 				def save_data():
-					# Save data for the result window and calculation
+					# Saving input variable for data file
 					date_time = dt_string																			
 					data_file.writerow([date_time, payload_mass, balloon_mass, balloon_nb, launch_volume, parachute_diameter , excess_weight_neck_lift, temperature_celcius, ambient_pressure, humidity_level])
 								
-				if os.path.exists("save_flight_data.csv") == False:			
+				if os.path.exists("save_flight_data.csv") == False:
+				# For first use or if data file doesn't exist			
 					with open("save_flight_data.csv", "w") as file:
 						data_file = csv.writer(file)						
 						data_file.writerow(["date_time","payload_mass(g)", "balloon_mass(g)", "nb_ballon", "launch_vol(m\u00b3)", "parachute_diameter(m)", "excess_weight_neck_lift(g)", "temperature_°C", "ambient_pressure(kPa)", "humidity_level(%)"])
 						save_data()											
-				else:			
+				else:
+				# Adding data in the file			
 					with open("save_flight_data.csv", "a") as file:
 						data_file = csv.writer(file)
 						save_data()		
@@ -245,9 +253,14 @@ class Flight_input():
 
 #------------------------------Bottom section--------------------------------------#
 
-	def create_close_button(self):
+	def create_button(self):
+		# Calculate button --> Execute add_data_values, checking input and saving + Open new window
+		calculate_button = Button(self.bottom_frame, text="Calculate", font=("babel", 12), bg='#cacfcc', fg='black', command=self.add_data_values)
+		calculate_button.grid(row=0, column=1 , padx=30, ipadx=100, ipady=8 , pady=20)
+
+		# Close program
 		close_button = Button(self.bottom_frame, text="Close", font=("babel", 14), bg='#cacfcc', fg='black', command=self.close_main_window)
-		close_button.grid(row=0, column=1, ipadx=100, pady=20, padx=40)	
+		close_button.grid(row=0, column=2, padx=30, ipadx=80, ipady=5 , pady=20)	
 				
 	def close_main_window(self):
 		self.main_window.destroy()
@@ -255,3 +268,9 @@ class Flight_input():
 if __name__ == "__main__":
 	start = Flight_input()
 	start.main_window.mainloop()	
+
+
+
+if __name__ == "__main__":
+	start = Flight_result()
+	start.rc_window.mainloop()
