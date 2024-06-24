@@ -1,4 +1,4 @@
-# R-OSE flight simulator v1.3
+# R-OSE flight parameters v1.3
 # Result section
 
 from tkinter import *
@@ -9,14 +9,15 @@ import re, math, os, csv, pyperclip, webbrowser
 class Flight_result():
 
 	def __init__(self):
+		# Setting window paramater
 		#rc = Result Calculator
 		self.rc_window = Tk()		
-		self.rc_window.title("R-OSE : The stratospheric balloon flight simulator")
-		self.rc_window.geometry("1100x1100")
-		self.rc_window.minsize(1100,1000)
-		#self.rc_window.resizable(width=False, height= False)
+		self.rc_window.title("R-OSE : The stratospheric balloon flight parameters")
+		self.rc_window.geometry("1120x1050")
+		self.rc_window.minsize(1120,1050)		
 		self.rc_window.config(background='#cacfcc')
 
+		# Setting principal frame
 		self.rc_top_frame = Frame(self.rc_window, bg='#cacfcc', bd=0, relief=RAISED, highlightthickness=0)
 		self.rc_section1_frame = Frame(self.rc_window, bg='#cacfcc', bd=0, relief=RAISED, highlightthickness=0)
 		self.rc_section2_frame = Frame(self.rc_window, bg='#cacfcc', bd=0, relief=RAISED, highlightthickness=0)
@@ -24,12 +25,14 @@ class Flight_result():
 
 		self.create_widgets()
 
+		# Declare position of section
 		self.rc_top_frame.pack()
 		self.rc_section1_frame.pack()
 		self.rc_section2_frame.pack()		
 		self.rc_bottom_frame.pack()		
 
 	def create_widgets(self):
+		# Setting main section
 		self.create_title()
 		self.create_subtitle()
 		self.create_logo()	
@@ -43,15 +46,14 @@ class Flight_result():
 #---------------------------------Top Section-----------------------------------#
 
 	def create_title(self):
-		title_text = "Welcome to the stratospheric balloon flight simulator"
+		title_text = "Welcome to the stratospheric balloon flight parameters"
 		label_title = Label(self.rc_top_frame, text=title_text, font=("babel", 15), bg='#cacfcc', fg='black')
 		label_title.pack()
 
 	def create_subtitle(self):
 		subtitle_text = "Designed by R-OSE \n and inspired from the Tawhiri CUSF Landing Prediction Software"
 		label_subtitle = Label(self.rc_top_frame, text=subtitle_text, font=("babel", 10), bg='#cacfcc', fg='black')
-		label_subtitle.pack()
-	
+		label_subtitle.pack()	
 	
 	def create_logo(self):		
 		image = Image.open("logo_v4_2.png")
@@ -61,6 +63,7 @@ class Flight_result():
 		self.label_logo.pack(pady=10)
 		
 	def read_data(self):
+		# Return the last line of data in the save file for calculation
 		with open("save_flight_data.csv", "r") as file:
 			last_line = file.readlines()[-1]			
 			last_line = last_line.strip("\n")
@@ -78,7 +81,8 @@ class Flight_result():
 
 #------------------------------------------------Math--------------------------------------------#
 	
-	def calculate_total_mass(self):	
+	def calculate_total_mass(self):
+		# All the original mass is in g, we convert to kg. 	
 		self.read_data()		
 		payload_m = float(self.payload_mass)
 		balloon_m = float(self.balloon_mass)
@@ -109,7 +113,6 @@ class Flight_result():
 		air_density = round((1/(rs*(273.15 + temperature_celcius)))*(pressure-(230.617*humidity*(math.e)**((17.625*temperature_celcius)/(243.04+temperature_celcius)))),3) 
 		return air_density	
 
-
 	def gaz_density(self):		
 		he_density = 0.178
 		difference_density = self.calculate_air_density()-he_density
@@ -119,8 +122,11 @@ class Flight_result():
 		gravity = 9.80665
 		# Drag coefficient for a sphere is 0.47, 
 		# But depending on the variation of the form it could vary between 0.30 to 0.47
+		# We choose 0.35 but it could more or less
 		balloon_drag_coefficient = 0.35
-		parachute_drag_coefficient = 2.3
+		# First estimate parachute 2.3 
+		# The parachute drag coefficient is determined experimentally after the first launch.
+		parachute_drag_coefficient = 1.2
 		return (gravity, balloon_drag_coefficient, parachute_drag_coefficient)
 	
 	def calculate_neck_lift(self):
@@ -164,6 +170,7 @@ class Flight_result():
 			sd_ascent_velocity = round(ascent_velocity, 2)
 			ascent_message = sd_ascent_velocity						
 		except ValueError:
+			# If the denominator of the square root is 0 
 			ascent_message = "The balloon doesn't float!"						
 		return ascent_message
 
@@ -187,6 +194,7 @@ class Flight_result():
 			sd_descent_velocity = round(descent_velocity, 2)
 			descent_message = sd_descent_velocity						
 		except ValueError:
+			# If the denominator of the square root is 0 
 			descent_message = "The balloon doesn't descent"
 		return descent_message
 
@@ -228,18 +236,22 @@ class Flight_result():
 		label_show_lift_off.grid(row=4, column=1)
 
 	def copy_result_burst_altitude(self):
+		# To use with CUSF simulator in Burst/Float altitude (m).
 		burst_altitude = self.burst_altitude()	
 		pyperclip.copy(burst_altitude)
 
 	def copy_result_ascent_velocity(self):
+		# To use with CUSF simulator in Ascent Rate (m/s).
 		ascent_velocity = self.ascent_velocity()	
 		pyperclip.copy(ascent_velocity)
 
 	def copy_result_descent_velocity(self):
+		# To use with CUSF simulator in Descent Rate (m/s).
 		descent_velocity = self.descent_velocity()	
 		pyperclip.copy(descent_velocity)
 
 	def open_cusf_sondehub_predictor(self):
+		# Open the simulator website design by Cambridge University Spaceflight landing predictor 
 		webbrowser.open_new("https://predict.sondehub.org/")
 
 #-----------------------------------Section 2 Variable Parameter------------------------------------------#
@@ -326,6 +338,7 @@ class Flight_result():
 		#close_button.grid(row=5, column=0, columnspan=3, pady=20, ipadx=200)
 
 	def run_again_flight_calculation_window(self):
+		# To restart the first window and close the present current window. 
 		from flight_input import Flight_input
 		self.rc_window.destroy()				
 		start = Flight_input()
@@ -337,6 +350,9 @@ class Flight_result():
 
 
 
+if __name__ == "__main__":
+	start = Flight_result()
+	start.rc_window.mainloop()
 if __name__ == "__main__":
 	start = Flight_result()
 	start.rc_window.mainloop()
