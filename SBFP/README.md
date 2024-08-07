@@ -8,8 +8,8 @@ To run the program, please follow the next step :
 1. Make the files executable in their folder : chmod +x flight_input.py flight_result.py
 
 2. Run virtual environement : virtualenv venv
-			      source venv/bin/activate			 
+			    : source venv/bin/activate			 
 			           
-3. Install the prerequisites for the program : pip install image pyperclip 
+4. Install the prerequisites for the program : pip install image pyperclip 
 
-4. Launch the program : pyhton3 flight_input.py
+5. Launch the program : pyhton3 flight_input.py
