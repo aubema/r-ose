@@ -19,8 +19,8 @@ class Flight_input():
 		# Setting window paramater
 		self.main_window = Tk()
 		self.main_window.title("R-OSE : The stratospheric balloon flight parameters")
-		self.main_window.geometry("1120x1060")
-		self.main_window.minsize(1120,1060)
+		self.main_window.geometry("1120x1060") # Change default screen geometry settings as needed to suit yours.
+		self.main_window.minsize(720,720)
 		self.main_window.config(background='#cacfcc')
 
 		# Setting principal frame
