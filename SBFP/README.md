@@ -5,11 +5,8 @@ This program calculates flight parameters for one or more atmospheric balloons. 
 
 To run the program, please follow the next step :
 
-1. Make the files executable in their folder : chmod +x flight_input.py flight_result.py
-
-2. Run virtual environement 1: virtualenv venv 
-			    2: source venv/bin/activate			 
+1. Run virtual environement : source venv/bin/activate			 
 			           
-4. Install the prerequisites for the program : pip install image pyperclip 
-
-5. Launch the program : python3 flight_input.py
+2. Launch the program in it's file : python3 flight_input.py
+   
+3. If necessary, install the prerequisites for the program and run #2 again : pip install image pyperclip 
