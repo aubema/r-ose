@@ -19,10 +19,17 @@ class Flight_input():
 		# Setting window paramater
 		self.main_window = Tk()
 		self.main_window.title("R-OSE : The stratospheric balloon flight parameters")
-		self.main_window.geometry("1120x1060") # Change default screen geometry settings as needed to suit yours.
-		self.main_window.minsize(720,720)
-		self.main_window.config(background='#cacfcc')
+		# Get resolution screen
+		screen_width = self.main_window.winfo_screenwidth()
+		screen_height = self.main_window.winfo_screenheight()
 
+		#Adjusting the program window to fit your screen resolution
+		window_width = int(screen_width * 0.5)
+		window_height = int(screen_height * 0.8)
+		self.main_window.geometry(f"{window_width}x{window_height}")
+		self.main_window.minsize(800, 600) 
+		self.main_window.config(background='#cacfcc')
+		
 		# Setting principal frame
 		self.top_frame = Frame(self.main_window, bg='#cacfcc', bd=0, relief=RAISED, highlightthickness=0)
 		self.section1_frame = Frame(self.main_window, bg='#cacfcc', bd=0, relief=RAISED, highlightthickness=0)
