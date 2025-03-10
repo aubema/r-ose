@@ -13,8 +13,16 @@ class Flight_result():
 		#rc = Result Calculator
 		self.rc_window = Tk()		
 		self.rc_window.title("R-OSE : The stratospheric balloon flight parameters")
-		self.rc_window.geometry("1120x1050") # Change default screen geometry settings as needed to suit yours.
-		self.rc_window.minsize(720,720)		
+		
+		# Get resolution screen
+		screen_width = self.rc_window.winfo_screenwidth()
+		screen_height = self.rc_window.winfo_screenheight()
+
+		# Adjusting the program window to fit your screen resolution
+		window_width = int(screen_width * 0.5)
+		window_height = int(screen_height * 0.8)
+		self.rc_window.geometry(f"{window_width}x{window_height}")
+		self.rc_window.minsize(800, 600) 	
 		self.rc_window.config(background='#cacfcc')
 
 		# Setting principal frame
